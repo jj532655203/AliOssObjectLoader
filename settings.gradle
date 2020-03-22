@@ -1,0 +1,2 @@
+include ':app', ':oss_object_loader'
+rootProject.name='AliOssObjectLoader'
