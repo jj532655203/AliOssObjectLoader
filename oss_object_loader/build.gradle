@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.jj532655203'
 
 android {
     compileSdkVersion 28
@@ -6,7 +8,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -31,4 +33,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.github.jj532655203:ScribbleSdk:1.1.4'
+    api 'com.github.jj532655203:AliOssImageLoader:1.1.4'
+    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.blankj:utilcode:1.25.5"
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.2'
 }
