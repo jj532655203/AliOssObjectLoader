@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.collection.LruCache;
 
+import com.jj.oss_object_loader.bean.PageUserDataInfo;
+
 ;
 
 /**
@@ -15,14 +17,14 @@ import androidx.collection.LruCache;
 public class PageUserDataInfoLruCache {
 
     private static final String TAG = "PageUserDataInfoLru";
-    private static LruCache<String, String> lruCache;
+    private static LruCache<String, PageUserDataInfo> lruCache;
     private static PageUserDataInfoLruCache instance;
 
     private PageUserDataInfoLruCache() {
         try {
-            lruCache = new LruCache<String, String>(getMemoryCacheSize()) {
-                protected int sizeOf(@NonNull String paramString, @NonNull String drawPathJson) {
-                    return drawPathJson.length() / 1024;
+            lruCache = new LruCache<String, PageUserDataInfo>(getMemoryCacheSize()) {
+                protected int sizeOf(@NonNull String paramString, @NonNull PageUserDataInfo drawPathJson) {
+                    return drawPathJson.toString().length() / 1024;
                 }
             };
         } catch (Exception e) {
@@ -45,13 +47,19 @@ public class PageUserDataInfoLruCache {
         return memorySize;
     }
 
-    public synchronized void put(String key, String drawPathJson) {
-        if (drawPathJson == null) drawPathJson = "";
+    public synchronized void put(String key, PageUserDataInfo drawPathJson) {
+        if (TextUtils.isEmpty(key)) return;
+
+        if (drawPathJson == null) {
+            lruCache.remove(key);
+            return;
+        }
+
         lruCache.put(key, drawPathJson);
     }
 
-    public synchronized String get(String key) {
-        if (TextUtils.isEmpty(key)) return "";
+    public synchronized PageUserDataInfo get(String key) {
+        if (TextUtils.isEmpty(key)) return null;
         return lruCache.get(key);
     }
 
