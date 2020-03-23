@@ -12,6 +12,7 @@ import com.fronttcapital.imageloader.ImgLoaderExecutor;
 import com.google.gson.Gson;
 import com.jj.fst_disk_lru.utils.FSTUtils;
 import com.jj.fst_disk_lru.utils.disk_lru_cache.DiskLruCacheUtils;
+import com.jj.fst_disk_lru.utils.memory_lru_cache.MemoryLruCacheUtils;
 import com.jj.oss_object_loader.bean.PageUserDataInfo;
 import com.jj.oss_object_loader.view.DrawScribblesView;
 import com.jj.scribble_sdk_pen.data.TouchPointList;
@@ -33,7 +34,7 @@ public class AliOssScribblesLoader {
         drawScribblesView.clearData();
 
         //内存获取
-        PageUserDataInfo mPageUserDataInfo = PageUserDataInfoLruCache.getInstance().get(ossPath);
+        PageUserDataInfo mPageUserDataInfo = (PageUserDataInfo) MemoryLruCacheUtils.getInstance().get(ossPath);
         if (!ObjectUtils.isEmpty(mPageUserDataInfo)) {
             List<TouchPointList> touchPointListList = mPageUserDataInfo.getStudentDrawPathList();
             List<TouchPointList> teacherDrawPathList = mPageUserDataInfo.getTeacherDrawPathList();
@@ -80,7 +81,7 @@ public class AliOssScribblesLoader {
 
                 }
 
-                PageUserDataInfoLruCache.getInstance().put(ossPath, pageUserDataInfo);
+                MemoryLruCacheUtils.getInstance().put(ossPath, pageUserDataInfo);
 
                 DrawScribblesView pathView = showPathViewRef.get();
                 if (ObjectUtils.isNotEmpty(pathView)) {
