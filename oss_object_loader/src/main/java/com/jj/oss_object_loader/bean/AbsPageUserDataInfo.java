@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class PageUserDataInfo implements Serializable, Cloneable {
+public abstract class AbsPageUserDataInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -3122640755970995885L;
 
@@ -36,7 +36,7 @@ public class PageUserDataInfo implements Serializable, Cloneable {
         }
     }
 
-    public PageUserDataInfo(long taskFinishId, long page, int bookContentPage, String myOssUrl, int[] createTimeYmd) {
+    public AbsPageUserDataInfo(long taskFinishId, long page, int bookContentPage, String myOssUrl, int[] createTimeYmd) {
         this.taskFinishId = taskFinishId;
         this.pageIndex = page;
         this.bookContentPage = bookContentPage;
@@ -46,12 +46,12 @@ public class PageUserDataInfo implements Serializable, Cloneable {
 
     @Override
     public Object clone() {
-        PageUserDataInfo pageUserDataInfo = null;
+        AbsPageUserDataInfo pageUserDataInfo = null;
         try {
             //淺拷貝
-            pageUserDataInfo = (PageUserDataInfo) super.clone();
+            pageUserDataInfo = (AbsPageUserDataInfo) super.clone();
         } catch (CloneNotSupportedException e) {
-//            return new PageUserDataInfo();
+//            return new AbsPageUserDataInfo();
             throw new RuntimeException("拷贝用户笔记数据失败");
         }
         //支持深度克隆
@@ -61,7 +61,7 @@ public class PageUserDataInfo implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return "PageUserDataInfo{" +
+        return "AbsPageUserDataInfo{" +
                 "taskFinishId=" + taskFinishId +
                 ", pageIndex=" + pageIndex +
                 ", bookContentPage=" + bookContentPage +

@@ -13,7 +13,7 @@ import com.fronttcapital.imageloader.ImgLoaderExecutor;
 import com.google.gson.Gson;
 import com.jj.fst_disk_lru.disk_lru_cache.DiskLruCacheUtils;
 import com.jj.fst_disk_lru.memory_lru_cache.MemoryLruCacheUtils;
-import com.jj.oss_object_loader.bean.PageUserDataInfo;
+import com.jj.oss_object_loader.bean.AbsPageUserDataInfo;
 import com.jj.oss_object_loader.view.DrawScribblesView;
 import com.jj.scribble_sdk_pen.data.TouchPointList;
 
@@ -34,12 +34,12 @@ public class AliOssScribblesLoader {
         drawScribblesView.clearData();
 
         //内存获取
-        PageUserDataInfo mPageUserDataInfo = (PageUserDataInfo) MemoryLruCacheUtils.getInstance().get(ossPath);
-        if (!ObjectUtils.isEmpty(mPageUserDataInfo)) {
-            List<TouchPointList> touchPointListList = mPageUserDataInfo.getStudentDrawPathList();
-            List<TouchPointList> teacherDrawPathList = mPageUserDataInfo.getTeacherDrawPathList();
-            PageUserDataInfo.convertPathListByWidthRatio(touchPointListList, mPageUserDataInfo.getOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
-            PageUserDataInfo.convertPathListByWidthRatio(teacherDrawPathList, mPageUserDataInfo.getTeacherOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
+        AbsPageUserDataInfo _pageUserDataInfo = (AbsPageUserDataInfo) MemoryLruCacheUtils.getInstance().get(ossPath);
+        if (!ObjectUtils.isEmpty(_pageUserDataInfo)) {
+            List<TouchPointList> touchPointListList = _pageUserDataInfo.getStudentDrawPathList();
+            List<TouchPointList> teacherDrawPathList = _pageUserDataInfo.getTeacherDrawPathList();
+            AbsPageUserDataInfo.convertPathListByWidthRatio(touchPointListList, _pageUserDataInfo.getOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
+            AbsPageUserDataInfo.convertPathListByWidthRatio(teacherDrawPathList, _pageUserDataInfo.getTeacherOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
             drawScribblesView.setPathList(touchPointListList, teacherDrawPathList, mPosition);
             Log.d(TAG, "loadShowPathView 内存获取到了");
             return;
@@ -57,7 +57,7 @@ public class AliOssScribblesLoader {
                 //致读者:不建议用内存缓存bitmap,建议使用前后条目预加载来加快图片显示
 
                 //从本地获取
-                PageUserDataInfo pageUserDataInfo = DiskLruCacheUtils.getInstance().getObject(ossPath, PageUserDataInfo.class);
+                AbsPageUserDataInfo pageUserDataInfo = DiskLruCacheUtils.getInstance().getObject(ossPath, AbsPageUserDataInfo.class);
                 if (ObjectUtils.isEmpty(pageUserDataInfo)) {
                     //从网络获取
                     try {
@@ -67,7 +67,7 @@ public class AliOssScribblesLoader {
                             return;
                         }
                         String jsonStr = IOUtils.readStreamAsString(ossResponse.getInputStream(), "UTF-8");
-                        pageUserDataInfo = new Gson().fromJson(jsonStr, PageUserDataInfo.class);
+                        pageUserDataInfo = new Gson().fromJson(jsonStr, AbsPageUserDataInfo.class);
                         if (ObjectUtils.isEmpty(pageUserDataInfo)) {
                             Log.e(TAG, "loadShowPathView 从网络下载下来为空文件");
                             return;
@@ -78,7 +78,7 @@ public class AliOssScribblesLoader {
                         return;
                     }
 
-                    DiskLruCacheUtils.getInstance().put(ossPath, pageUserDataInfo, PageUserDataInfo.class);
+                    DiskLruCacheUtils.getInstance().put(ossPath, pageUserDataInfo, AbsPageUserDataInfo.class);
 
                 }
 
@@ -91,8 +91,8 @@ public class AliOssScribblesLoader {
                         if (tag instanceof String && TextUtils.equals((CharSequence) tag, ossPath)) {
                             List<TouchPointList> touchPointListList = pageUserDataInfo.getStudentDrawPathList();
                             List<TouchPointList> teacherDrawPathList = pageUserDataInfo.getTeacherDrawPathList();
-                            PageUserDataInfo.convertPathListByWidthRatio(touchPointListList, pageUserDataInfo.getOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
-                            PageUserDataInfo.convertPathListByWidthRatio(teacherDrawPathList, pageUserDataInfo.getOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
+                            AbsPageUserDataInfo.convertPathListByWidthRatio(touchPointListList, pageUserDataInfo.getOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
+                            AbsPageUserDataInfo.convertPathListByWidthRatio(teacherDrawPathList, pageUserDataInfo.getOriginalScribbleViewWidth(), ScreenUtils.getScreenWidth());
                             pathView.setPathList(touchPointListList, teacherDrawPathList, mPosition);
                         }
                     }
