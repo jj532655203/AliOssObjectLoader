@@ -3,6 +3,7 @@ package com.jj.oss_object_loader;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.sdk.android.oss.common.utils.IOUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.Utils;
@@ -10,9 +11,8 @@ import com.fronttcapital.imageloader.AliOssResponse;
 import com.fronttcapital.imageloader.AliOssUtils;
 import com.fronttcapital.imageloader.ImgLoaderExecutor;
 import com.google.gson.Gson;
-import com.jj.fst_disk_lru.utils.FSTUtils;
-import com.jj.fst_disk_lru.utils.disk_lru_cache.DiskLruCacheUtils;
-import com.jj.fst_disk_lru.utils.memory_lru_cache.MemoryLruCacheUtils;
+import com.jj.fst_disk_lru.disk_lru_cache.DiskLruCacheUtils;
+import com.jj.fst_disk_lru.memory_lru_cache.MemoryLruCacheUtils;
 import com.jj.oss_object_loader.bean.PageUserDataInfo;
 import com.jj.oss_object_loader.view.DrawScribblesView;
 import com.jj.scribble_sdk_pen.data.TouchPointList;
@@ -66,7 +66,8 @@ public class AliOssScribblesLoader {
                             Log.w(TAG, "loadShowPathView 从网络下载失败 ossResponse异常 或许该页未曾产生页用户数据");
                             return;
                         }
-                        pageUserDataInfo = FSTUtils.getInstance().readObjectFromStream(ossResponse.getInputStream(), PageUserDataInfo.class);
+                        String jsonStr = IOUtils.readStreamAsString(ossResponse.getInputStream(), "UTF-8");
+                        pageUserDataInfo = new Gson().fromJson(jsonStr, PageUserDataInfo.class);
                         if (ObjectUtils.isEmpty(pageUserDataInfo)) {
                             Log.e(TAG, "loadShowPathView 从网络下载下来为空文件");
                             return;
